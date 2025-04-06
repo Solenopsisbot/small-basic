@@ -34,7 +34,11 @@
             "patterns": [
                 {
                     "name": "keyword.control.smallbasic",
-                    "match": "\\b(?i:If|Then|Else|ElseIf|EndIf|While|EndWhile|For|To|Step|EndFor|Sub|EndSub|Goto)\\b"
+                    "match": "\\b(?i:If|Then|Else|ElseIf|EndIf|While|EndWhile|For|To|Step|EndFor|EndSub|Goto)\\b"
+                },
+                {
+                    "name": "keyword.control.declaration.smallbasic",
+                    "match": "\\b(?i:Sub)\\s+([A-Za-z][A-Za-z0-9_]*)\\b"
                 },
                 {
                     "name": "keyword.operator.smallbasic",
@@ -75,10 +79,10 @@
                     "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\b",
                     "captures": {
                         "1": {
-                            "name": "support.class.smallbasic"
+                            "name": "entity.name.class.smallbasic"
                         },
                         "2": {
-                            "name": "support.function.smallbasic"
+                            "name": "entity.name.function.smallbasic"
                         }
                     }
                 }

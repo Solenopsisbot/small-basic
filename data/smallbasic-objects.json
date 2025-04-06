@@ -1,0 +1,195 @@
+{
+  "keywords": [
+    "If", "Then", "Else", "ElseIf", "EndIf", "While", "EndWhile", 
+    "For", "To", "Step", "EndFor", "Sub", "EndSub", "Goto", "And", "Or", "Not"
+  ],
+  "objects": [
+    { 
+      "name": "Array",
+      "description": "Provides methods to work with arrays",
+      "properties": [],
+      "methods": [
+        "ContainsIndex", "ContainsValue", "GetAllIndices", "GetItemCount", 
+        "GetValue", "IsArray", "RemoveValue", "SetValue"
+      ]
+    },
+    { 
+      "name": "Clock",
+      "description": "Provides access to date and time information", 
+      "properties": [
+        "Date", "Day", "ElapsedMilliseconds", "Hour", "Millisecond", "Minute", 
+        "Month", "Second", "Time", "TimeZone", "WeekDay", "Year"
+      ],
+      "methods": []
+    },
+    { 
+      "name": "Controls",
+      "description": "Provides methods for creating user interface controls",
+      "properties": ["LastClickedButton"],
+      "methods": [
+        "AddButton", "AddMultiLineTextBox", "AddTextBox", "ButtonClicked", 
+        "GetButtonCaption", "GetTextBoxText", "HideControl", "Remove", 
+        "SetButtonCaption", "SetSize", "SetTextBoxText", "ShowControl"
+      ]
+    },
+    { 
+      "name": "Desktop",
+      "description": "Provides information about the desktop",
+      "properties": ["Height", "Width"],
+      "methods": []
+    },
+    { 
+      "name": "Dictionary",
+      "description": "Provides methods for key-value pair collections",
+      "properties": [],
+      "methods": [
+        "AddValue", "ContainsKey", "ContainsValue", "GetItemCount", 
+        "GetKeys", "GetValue", "RemoveValue"
+      ]
+    },
+    { 
+      "name": "File",
+      "description": "Provides file system operations",
+      "properties": [],
+      "methods": [
+        "AppendContents", "CopyFile", "CreateDirectory", "DeleteDirectory", 
+        "DeleteFile", "GetDirectories", "GetFiles", "GetSettingsFilePath", "GetTemporaryFilePath", 
+        "InsertLine", "ReadContents", "ReadLine", "WriteContents", "WriteLine"
+      ]
+    },
+    { 
+      "name": "Flickr",
+      "description": "Provides access to Flickr images",
+      "properties": [],
+      "methods": [
+        "GetPictureOfMoment", "GetRandomPicture", "GetRandomPictureOfPlace"
+      ]
+    },
+    { 
+      "name": "GraphicsWindow",
+      "description": "Provides methods for creating and manipulating graphics",
+      "properties": [
+        "BackgroundColor", "BrushColor", "CanResize", "FontBold", "FontItalic", "FontName", 
+        "FontSize", "Height", "LastKey", "Left", "MouseX", "MouseY", "PenColor", 
+        "PenWidth", "Title", "Top", "Width"
+      ],
+      "methods": [
+        "Clear", "DrawBoundText", "DrawEllipse", "DrawImage", "DrawLine", 
+        "DrawRectangle", "DrawResizedImage", "DrawText", "DrawTriangle", 
+        "FillEllipse", "FillRectangle", "FillTriangle", "GetColorFromRGB",
+        "GetLeft", "GetPixel", "GetRandomColor", "GetTop", 
+        "Hide", "KeyDown", "KeyUp", "MouseDown", "MouseMove", 
+        "MouseUp", "SetPixel", "Show", "ShowMessage"
+      ]
+    },
+    { 
+      "name": "ImageList",
+      "description": "Provides methods for working with images",
+      "properties": [],
+      "methods": [
+        "GetHeightOfImage", "GetWidthOfImage", "LoadImage"
+      ]
+    },
+    { 
+      "name": "Math",
+      "description": "Provides mathematical functions and operations",
+      "properties": ["Pi"],
+      "methods": [
+        "Abs", "Ceiling", "Cos", "Floor", "GetDegrees",
+        "GetRadians", "GetRandomNumber", "Max", "Min", "NaturalLog",
+        "Power", "Remainder", "Round", "Sin", "SquareRoot", "Tan"
+      ]
+    },
+    { 
+      "name": "Mouse",
+      "description": "Provides access to mouse input and cursor control",
+      "properties": ["MouseX", "MouseY", "WheelDelta"],
+      "methods": [
+        "ButtonDown", "ButtonUp", "HideCursor", "IsLeftButtonDown", 
+        "IsMiddleButtonDown", "IsRightButtonDown", "ShowCursor", "WheelDown", "WheelUp"
+      ]
+    },
+    { 
+      "name": "Network",
+      "description": "Provides methods for network operations",
+      "properties": [],
+      "methods": [
+        "DownloadFile", "DownloadImage", "GetWebPageContents", "IsConnected"
+      ]
+    },
+    { 
+      "name": "Program",
+      "description": "Provides program control functions",
+      "properties": ["Directory"],
+      "methods": [
+        "Delay", "End", "GetArgument", "Pause", "SetArgument"
+      ]
+    },
+    { 
+      "name": "Shapes",
+      "description": "Provides methods to create and manipulate shapes",
+      "properties": [],
+      "methods": [
+        "AddEllipse", "AddImage", "AddLine", "AddRectangle", "AddText",
+        "AddTriangle", "Animate", "GetLeft", "GetOpacity", "GetTop",
+        "GetX", "GetY", "HideShape", "Move", "Remove", "Resize",
+        "Rotate", "SetOpacity", "SetText", "ShowShape", "Zoom"
+      ]
+    },
+    { 
+      "name": "Sound",
+      "description": "Provides methods for playing sounds and music",
+      "properties": [],
+      "methods": [
+        "Play", "PlayAndWait", "PlayBackgroundSound", "PlayBellRing", "PlayChime", "PlayClick",
+        "PlayChimes", "PlayMusic", "PlayMusicAndWait", "PlaySystemSound", "StopBackgroundSound"
+      ]
+    },
+    { 
+      "name": "Stack",
+      "description": "Provides methods for stack operations",
+      "properties": [],
+      "methods": [
+        "GetCount", "PopValue", "PushValue"
+      ]
+    },
+    { 
+      "name": "Text",
+      "description": "Provides methods for text manipulation and processing",
+      "properties": [],
+      "methods": [
+        "Append", "ConvertToLowerCase", "ConvertToUpperCase", "EndsWith",
+        "GetCharacter", "GetCharacterCode", "GetIndexOf", "GetLength",
+        "GetSubText", "GetSubTextToEnd", "IsSubText", "StartsWith"
+      ]
+    },
+    { 
+      "name": "TextWindow",
+      "description": "Provides methods for console input and output",
+      "properties": [
+        "BackgroundColor", "CursorLeft", "CursorTop", "ForegroundColor", "Title"
+      ],
+      "methods": [
+        "Clear", "Hide", "Pause", "PauseIfVisible", "PauseWithoutMessage", "Read",
+        "ReadKey", "ReadNumber", "ReadLine", "Show", "Write", "WriteLine"
+      ]
+    },
+    { 
+      "name": "Timer",
+      "description": "Provides timer functionality",
+      "properties": ["Interval"],
+      "methods": [
+        "Pause", "Resume", "Tick"
+      ]
+    },
+    { 
+      "name": "Turtle",
+      "description": "Provides methods for turtle graphics",
+      "properties": ["Angle", "Distance", "Speed", "X", "Y"],
+      "methods": [
+        "Hide", "Move", "MoveTo", "PenDown", "PenUp", "Show", "Turn",
+        "TurnLeft", "TurnRight"
+      ]
+    }
+  ]
+}
