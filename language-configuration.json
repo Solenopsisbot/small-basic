@@ -1,0 +1,37 @@
+{
+    "comments": {
+        "lineComment": "'"
+    },
+    "brackets": [
+        ["(", ")"],
+        ["If", "EndIf"],
+        ["For", "EndFor"],
+        ["While", "EndWhile"],
+        ["Sub", "EndSub"]
+    ],
+    "autoClosingPairs": [
+        ["(", ")"],
+        ["\"", "\""]
+    ],
+    "surroundingPairs": [
+        ["(", ")"],
+        ["\"", "\""]
+    ],
+    "folding": {
+        "markers": {
+            "start": "^\\s*(Sub|If|For|While)\\b",
+            "end": "^\\s*(EndSub|EndIf|EndFor|EndWhile)\\b"
+        }
+    },
+    "wordPattern": "(-?\\d*\\.\\d\\w*)|([^\\`\\~\\!\\@\\#\\%\\^\\&\\*\\(\\)\\-\\=\\+\\[\\{\\]\\}\\\\\\|\\;\\:\\'\\\"\\,\\.\\<\\>\\/\\?\\s]+)",
+    "indentationRules": {
+        "increaseIndentPattern": "^\\s*(If|For|While|Sub)\\b.*$",
+        "decreaseIndentPattern": "^\\s*(EndIf|EndFor|EndWhile|EndSub)\\b.*$"
+    },
+    "onEnterRules": [
+        {
+            "beforeText": "^\\s*(If|For|While|Sub)\\b.*$",
+            "action": { "indent": "indent" }
+        }
+    ]
+}

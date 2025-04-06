@@ -1,0 +1,88 @@
+{
+	"name": "small-basic",
+	"description": "Microsoft Small Basic language support for Visual Studio Code",
+	"author": "Solenopsisbot",
+	"license": "MIT",
+	"version": "0.1.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Microsoft/vscode-extension-samples"
+	},
+	"publisher": "vscode-samples",
+	"categories": ["Programming Languages"],
+	"keywords": [
+		"small basic",
+		"smallbasic",
+		"basic"
+	],
+	"engines": {
+		"vscode": "^1.75.0"
+	},
+	"main": "./client/out/extension",
+	"contributes": {
+		"languages": [{
+			"id": "smallbasic",
+			"aliases": ["Small Basic", "smallbasic"],
+			"extensions": [".sb"],
+			"configuration": "./language-configuration.json"
+		}],
+		"grammars": [{
+			"language": "smallbasic",
+			"scopeName": "source.smallbasic",
+			"path": "./syntaxes/smallbasic.tmLanguage.json"
+			}],
+		"snippets": [
+			{
+				"language": "smallbasic",
+				"path": "./snippets/smallbasic.json"
+			}
+		],
+		"configuration": {
+			"type": "object",
+			"title": "Small Basic",
+			"properties": {
+				"smallBasic.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+					},
+				"smallBasic.trace.server": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"description": "Traces the communication between VS Code and the language server."
+				},
+				"smallBasic.enableAutoParentheses": {
+					"scope": "resource",
+					"type": "boolean",
+					"default": true,
+					"description": "Controls whether to automatically add parentheses after method completion."
+				}
+			}
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w",
+		"lint": "eslint",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"test": "sh ./scripts/e2e.sh"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.13.0",
+		"@stylistic/eslint-plugin": "^2.9.0",
+		"@types/mocha": "^10.0.6",
+		"@types/node": "^20",
+		"eslint": "^9.13.0",
+		"mocha": "^10.3.0",
+		"typescript": "^5.8.2",
+		"typescript-eslint": "^8.26.0"
+	}
+}
