@@ -1,0 +1,97 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "name": "Small Basic",
+    "patterns": [
+        {
+            "include": "#comments"
+        },
+        {
+            "include": "#keywords"
+        },
+        {
+            "include": "#strings"
+        },
+        {
+            "include": "#constants"
+        },
+        {
+            "include": "#objects"
+        },
+        {
+            "include": "#variables"
+        }
+    ],
+    "repository": {
+        "comments": {
+            "patterns": [
+                {
+                    "name": "comment.line.apostrophe.smallbasic",
+                    "match": "'.*$"
+                }
+            ]
+        },
+        "keywords": {
+            "patterns": [
+                {
+                    "name": "keyword.control.smallbasic",
+                    "match": "\\b(?i:If|Then|Else|ElseIf|EndIf|While|EndWhile|For|To|Step|EndFor|Sub|EndSub|Goto)\\b"
+                },
+                {
+                    "name": "keyword.operator.smallbasic",
+                    "match": "\\b(?i:And|Or|Not)\\b"
+                }
+            ]
+        },
+        "strings": {
+            "name": "string.quoted.double.smallbasic",
+            "begin": "\"",
+            "end": "\"",
+            "patterns": [
+                {
+                    "name": "constant.character.escape.smallbasic",
+                    "match": "\\\\."
+                }
+            ]
+        },
+        "constants": {
+            "patterns": [
+                {
+                    "name": "constant.numeric.smallbasic",
+                    "match": "\\b[-+]?[0-9]*\\.?[0-9]+\\b"
+                },
+                {
+                    "name": "constant.language.smallbasic",
+                    "match": "\\b(?i:true|false)\\b"
+                }
+            ]
+        },
+        "objects": {
+            "patterns": [
+                {
+                    "name": "support.class.smallbasic",
+                    "match": "\\b(?i:GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr)\\b"
+                },
+                {
+                    "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\b",
+                    "captures": {
+                        "1": {
+                            "name": "support.class.smallbasic"
+                        },
+                        "2": {
+                            "name": "support.function.smallbasic"
+                        }
+                    }
+                }
+            ]
+        },
+        "variables": {
+            "patterns": [
+                {
+                    "name": "variable.other.smallbasic",
+                    "match": "\\b[a-zA-Z][a-zA-Z0-9_]*\\b"
+                }
+            ]
+        }
+    },
+    "scopeName": "source.smallbasic"
+}

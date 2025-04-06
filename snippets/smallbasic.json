@@ -1,0 +1,80 @@
+{
+    "If statement": {
+        "prefix": ["if"],
+        "body": [
+            "If ${1:condition} Then",
+            "\t$0",
+            "EndIf"
+        ],
+        "description": "If statement"
+    },
+    "If-Else statement": {
+        "prefix": ["ifelse"],
+        "body": [
+            "If ${1:condition} Then",
+            "\t$2",
+            "Else",
+            "\t$0",
+            "EndIf"
+        ],
+        "description": "If-Else statement"
+    },
+    "For loop": {
+        "prefix": ["for"],
+        "body": [
+            "For ${1:i} = ${2:1} To ${3:10}",
+            "\t$0",
+            "EndFor"
+        ],
+        "description": "For loop"
+    },
+    "For loop with Step": {
+        "prefix": ["forstep"],
+        "body": [
+            "For ${1:i} = ${2:1} To ${3:10} Step ${4:1}",
+            "\t$0",
+            "EndFor"
+        ],
+        "description": "For loop with Step"
+    },
+    "While loop": {
+        "prefix": ["while"],
+        "body": [
+            "While ${1:condition}",
+            "\t$0",
+            "EndWhile"
+        ],
+        "description": "While loop"
+    },
+    "Subroutine": {
+        "prefix": ["sub"],
+        "body": [
+            "Sub ${1:SubName}",
+            "\t$0",
+            "EndSub"
+        ],
+        "description": "Subroutine definition"
+    },
+    "GraphicsWindow initialization": {
+        "prefix": ["gwinit"],
+        "body": [
+            "GraphicsWindow.Title = \"${1:My Program}\"",
+            "GraphicsWindow.Width = ${2:800}",
+            "GraphicsWindow.Height = ${3:600}",
+            "GraphicsWindow.CanResize = ${4:\"False\"}",
+            "GraphicsWindow.BackgroundColor = \"${5:White}\"",
+            "$0"
+        ],
+        "description": "Initialize GraphicsWindow with common properties"
+    },
+    "TextWindow initialization": {
+        "prefix": ["twinit"],
+        "body": [
+            "TextWindow.Title = \"${1:My Program}\"",
+            "TextWindow.ForegroundColor = \"${2:White}\"",
+            "TextWindow.BackgroundColor = \"${3:Black}\"",
+            "$0"
+        ],
+        "description": "Initialize TextWindow with common properties"
+    }
+}
