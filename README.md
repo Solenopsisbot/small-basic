@@ -26,6 +26,18 @@ Type any of the following prefixes to activate snippets:
 - `gwinit` - GraphicsWindow initialization with common properties
 - `twinit` - TextWindow initialization with common properties
 
+## Customizing Small Basic Objects
+
+The extension loads object definitions from a JSON file located at:
+`data/smallbasic-objects.json`
+
+You can modify this file to:
+- Add new objects or members
+- Update descriptions
+- Modify existing members
+
+After editing the file, reload VSCode to apply your changes.
+
 ## Small Basic Language
 
 Small Basic is a simplified programming language designed by Microsoft to make learning programming easy and fun. It features:
