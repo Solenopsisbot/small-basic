@@ -3,7 +3,7 @@
 	"description": "Microsoft Small Basic language support for Visual Studio Code",
 	"author": "Solenopsisbot",
 	"license": "MIT",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Solenopsisbot/small-basic"
@@ -44,9 +44,9 @@
 				"smallBasic.maxNumberOfProblems": {
 					"scope": "resource",
 					"type": "number",
-					"default": 100,
+					"default": 1000,
 					"description": "Controls the maximum number of problems produced by the server."
-					},
+				},
 				"smallBasic.trace.server": {
 					"scope": "window",
 					"type": "string",
@@ -63,8 +63,102 @@
 					"type": "boolean",
 					"default": true,
 					"description": "Controls whether to automatically add parentheses after method completion."
+				},
+				"smallBasic.compilerPath": {
+					"scope": "resource",
+					"type": "string",
+					"default": "C:\\Program Files (x86)\\Microsoft\\Small Basic\\SmallBasicCompiler.exe",
+					"description": "Path to the Small Basic compiler executable"
 				}
 			}
+		},
+		"commands": [
+			{
+				"command": "smallbasic.compile",
+				"title": "Small Basic: Compile Program"
+			},
+			{
+				"command": "smallbasic.run",
+				"title": "Small Basic: Compile and Run Program"
+			}
+		],
+		"debuggers": [
+			{
+				"type": "smallbasic",
+				"label": "Small Basic",
+				"runtime": "SmallBasic",
+				"configurationAttributes": {
+					"launch": {
+						"required": [],
+						"properties": {
+							"program": {
+								"type": "string",
+								"description": "The path to the Small Basic program to debug",
+								"default": "${file}"
+							},
+							"compileOnly": {
+								"type": "boolean",
+								"description": "Only compile the program without running it",
+								"default": false
+							}
+						}
+					}
+				},
+				"initialConfigurations": [
+					{
+						"type": "smallbasic",
+						"request": "launch",
+						"name": "Compile Small Basic Program",
+						"program": "${file}",
+						"compileOnly": true
+					},
+					{
+						"type": "smallbasic",
+						"request": "launch",
+						"name": "Run Small Basic Program",
+						"program": "${file}",
+						"compileOnly": false
+					}
+				],
+				"configurationSnippets": [
+					{
+						"label": "Small Basic: Compile",
+						"description": "Compile Small Basic program without running",
+						"body": {
+							"type": "smallbasic",
+							"request": "launch",
+							"name": "Compile Small Basic Program",
+							"program": "^\"\\${file}\"",
+							"compileOnly": true
+						}
+					},
+					{
+						"label": "Small Basic: Run",
+						"description": "Compile and run Small Basic program",
+						"body": {
+							"type": "smallbasic",
+							"request": "launch",
+							"name": "Run Small Basic Program",
+							"program": "^\"\\${file}\"",
+							"compileOnly": false
+						}
+					}
+				]
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "resourceLangId == smallbasic",
+					"command": "smallbasic.run",
+					"group": "navigation"
+				},
+				{
+					"when": "resourceLangId == smallbasic",
+					"command": "smallbasic.compile",
+					"group": "navigation"
+				}
+			]
 		}
 	},
 	"scripts": {

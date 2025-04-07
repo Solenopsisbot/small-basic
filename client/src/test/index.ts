@@ -3,8 +3,10 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import * as path from 'path';
-import * as Mocha from 'mocha';
 import { glob } from 'glob';
+
+// Fix the Mocha import to make it constructable
+const Mocha = require('mocha');
 
 export function run(): Promise<void> {
 	// Create the mocha test
@@ -24,7 +26,8 @@ export function run(): Promise<void> {
 		try {
 			// Run the mocha test
 			await new Promise<void>((resolve, reject) => {
-				mocha.run(failures => {
+				// Add type annotation to failures parameter
+				mocha.run((failures: number) => {
 					if (failures > 0) {
 						reject(`${failures} tests failed.`);
 					} else {
