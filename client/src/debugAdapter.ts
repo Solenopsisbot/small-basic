@@ -39,6 +39,9 @@ export class SmallBasicDebugAdapterDescriptorFactory implements vscode.DebugAdap
         session: vscode.DebugSession, 
         executable: vscode.DebugAdapterExecutable | undefined
     ): Promise<vscode.DebugAdapterDescriptor> {
+        // Log that we're creating a debug adapter
+        console.log(`Creating debug adapter for session: ${session.id}, type: ${session.type}`);
+        
         // Return our own implementation of the debug adapter
         const adapter = new SmallBasicDebugAdapter();
         return new vscode.DebugAdapterInlineImplementation(adapter);
@@ -48,19 +51,25 @@ export class SmallBasicDebugAdapterDescriptorFactory implements vscode.DebugAdap
 class SmallBasicDebugAdapter implements vscode.DebugAdapter {
     private readonly _onDidSendMessage = new vscode.EventEmitter<Uint8Array>();
     readonly onDidSendMessage: vscode.Event<Uint8Array> = this._onDidSendMessage.event;
-    private diagnosticCollection: vscode.DiagnosticCollection;
-
+    
+    // Use VS Code's window instead of creating our own output channel
+    // This will ensure debug messages appear in the Debug Console
+    private outputChannel: vscode.OutputChannel;
+    
     constructor() {
-        // Create diagnostic collection for compiler errors
-        this.diagnosticCollection = vscode.languages.createDiagnosticCollection('smallBasicCompiler');
+        console.log('Initializing Small Basic Debug Adapter');
+        this.outputChannel = vscode.window.createOutputChannel('Small Basic Debug');
+        this.outputChannel.show(true);
     }
 
     dispose(): void {
         this._onDidSendMessage.dispose();
-        this.diagnosticCollection.dispose();
     }
 
-    async handleMessage(message: any): Promise<void> {
+    handleMessage(message: any): void {
+        console.log(`Debug adapter received message: ${message.command}`);
+        this.outputChannel.appendLine(`Debug message received: ${message.command}`);
+        
         // Handle initialize request
         if (message.command === 'initialize') {
             this.sendResponse({
@@ -83,129 +92,143 @@ class SmallBasicDebugAdapter implements vscode.DebugAdapter {
 
         // Handle launch request (this is where we compile/run the Small Basic program)
         if (message.command === 'launch') {
+            this.outputChannel.appendLine('Starting Small Basic program...');
+            
             const program = message.arguments.program;
-            const compileOnly = message.arguments.compileOnly || false;
-            const filePath = this.resolvePath(program);
-
-            if (!filePath) {
-                this.sendErrorResponse(message, 1001, `Invalid program path: ${program}`);
-                return;
-            }
-
-            if (!fs.existsSync(filePath)) {
-                this.sendErrorResponse(message, 1002, `Program file does not exist: ${filePath}`);
-                return;
-            }
-
-            try {
-                // Clear previous diagnostics
-                this.diagnosticCollection.clear();
-
-                // Compile the Small Basic program
-                const result = await compileSmallBasicProgram(filePath);
-
-                // Check for compilation errors
-                if (!result.success && result.errors && result.errors.length > 0) {
-                    // Display compilation errors
-                    const document = await vscode.workspace.openTextDocument(filePath);
-                    const diagnostics: vscode.Diagnostic[] = [];
-
-                    for (const error of result.errors) {
-                        const range = this.getErrorRange(document, error);
-                        const diagnostic = new vscode.Diagnostic(
-                            range,
-                            `Compilation error: ${error.message}`,
-                            vscode.DiagnosticSeverity.Error
-                        );
-                        diagnostics.push(diagnostic);
-                    }
-
-                    this.diagnosticCollection.set(vscode.Uri.file(filePath), diagnostics);
-                    this.sendErrorResponse(message, 1003, 'Compilation failed with errors');
-                    return;
-                }
-
-                // If it's compile-only mode, just send success
-                if (compileOnly) {
-                    vscode.window.showInformationMessage('Small Basic program compiled successfully');
-                    this.sendResponse({
-                        request_seq: message.seq,
-                        success: true,
-                        command: message.command
-                    });
-                } else {
-                    // Run the compiled program
-                    if (result.exePath && fs.existsSync(result.exePath)) {
-                        vscode.window.showInformationMessage(`Running: ${path.basename(filePath)}`);
-
-                        // Launch the executable as a detached process
-                        const child = cp.spawn(result.exePath, [], {
-                            detached: true,
-                            stdio: 'ignore',
-                            windowsHide: false
-                        });
-                        child.unref();
-
-                        // Send success response
-                        this.sendResponse({
-                            request_seq: message.seq,
-                            success: true,
-                            command: message.command
-                        });
-                    } else {
-                        this.sendErrorResponse(message, 1004, 'Compiled executable not found');
-                        return;
-                    }
-                }
-
-                // Terminate the debug session
-                this.sendEvent({
-                    type: 'event',
-                    event: 'terminated',
-                    seq: 0
-                });
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : String(error);
-                this.sendErrorResponse(message, 1005, `Error: ${errorMessage}`);
-            }
-            return;
-        }
-
-        // Handle threads request (required for debug protocol)
-        if (message.command === 'threads') {
-            this.sendResponse({
-                request_seq: message.seq,
-                success: true,
-                command: message.command,
-                body: {
-                    threads: [
-                        { id: 1, name: 'main' }
-                    ]
-                }
-            });
-            return;
-        }
-
-        // Handle other required debug protocol messages
-        if (message.command === 'configurationDone' ||
-            message.command === 'stackTrace' ||
-            message.command === 'scopes' ||
-            message.command === 'variables' ||
-            message.command === 'disconnect') {
+            this.outputChannel.appendLine(`Program file: ${program}`);
+            
+            // Launch the program asynchronously and don't block the debug adapter
+            this.launchProgram(program, message.arguments.compileOnly || false, message);
+            
+            // We don't wait for program completion - respond immediately to keep debug protocol happy
             this.sendResponse({
                 request_seq: message.seq,
                 success: true,
                 command: message.command
             });
+            
+            return;
+        }
+
+        // Handle standard debug protocol messages required for clean operation
+        if (['threads', 'stackTrace', 'scopes', 'variables', 'configurationDone', 'disconnect'].includes(message.command)) {
+            // For threads request, we need to return at least one thread
+            if (message.command === 'threads') {
+                this.sendResponse({
+                    request_seq: message.seq,
+                    success: true,
+                    command: message.command,
+                    body: {
+                        threads: [{ id: 1, name: 'main' }]
+                    }
+                });
+            } else {
+                // For other simple requests, just acknowledge them
+                this.sendResponse({
+                    request_seq: message.seq,
+                    success: true,
+                    command: message.command
+                });
+            }
             return;
         }
 
         // For unhandled requests
+        console.log(`Unhandled debug request: ${message.command}`);
         this.sendResponse({
             request_seq: message.seq,
             success: false,
             command: message.command,
             message: `Unrecognized request: ${message.command}`
+        });
+    }
+
+    // Helper method to launch the Small Basic program
+    private async launchProgram(programPath: string, compileOnly: boolean, request: any): Promise<void> {
+        try {
+            // Resolve any variables in the path (like ${file})
+            const filePath = this.resolvePath(programPath);
+            if (!filePath) {
+                this.outputChannel.appendLine(`ERROR: Invalid program path: ${programPath}`);
+                this.sendErrorResponse(request, 1001, `Invalid program path: ${programPath}`);
+                this.sendTerminatedEvent();
+                return;
+            }
+
+            this.outputChannel.appendLine(`Compiling: ${filePath}`);
+            
+            // Compile the program using our compiler module
+            try {
+                const result = await compileSmallBasicProgram(filePath, true);
+                
+                // Log the raw compiler output
+                if (result.rawOutput) {
+                    this.outputChannel.appendLine('COMPILER OUTPUT:');
+                    this.outputChannel.appendLine('-------------------------------------------');
+                    this.outputChannel.appendLine(result.rawOutput);
+                    this.outputChannel.appendLine('-------------------------------------------');
+                }
+                
+                if (result.success) {
+                    this.outputChannel.appendLine(`Compilation successful: ${path.basename(filePath)}`);
+                    
+                    // Run the compiled program if not compile-only mode
+                    if (!compileOnly && result.exePath && fs.existsSync(result.exePath)) {
+                        this.outputChannel.appendLine(`Running: ${result.exePath}`);
+                        
+                        try {
+                            // Use start command to launch the program (best for Windows GUI apps)
+                            const exePath = result.exePath;
+                            cp.exec(`start "" "${exePath}"`, {
+                                cwd: path.dirname(exePath),
+                                windowsHide: false
+                            }, (error) => {
+                                if (error) {
+                                    this.outputChannel.appendLine(`Error launching program: ${error.message}`);
+                                }
+                            });
+                            
+                            this.outputChannel.appendLine('Program launched successfully');
+                        } catch (error) {
+                            this.outputChannel.appendLine(`Failed to launch program: ${error}`);
+                        }
+                    } else if (compileOnly) {
+                        this.outputChannel.appendLine('Compile-only mode - program not started');
+                    } else {
+                        this.outputChannel.appendLine('ERROR: Compiled executable not found');
+                    }
+                } else {
+                    this.outputChannel.appendLine(`Compilation failed with ${result.errors?.length || 0} errors`);
+                    
+                    if (result.errors && result.errors.length > 0) {
+                        result.errors.forEach(error => {
+                            if (error.line !== undefined) {
+                                this.outputChannel.appendLine(`Line ${error.line}, Col ${error.column || 0}: ${error.message}`);
+                            } else {
+                                this.outputChannel.appendLine(`Error: ${error.message}`);
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                this.outputChannel.appendLine(`Error during compilation: ${error}`);
+            }
+            
+            // Signal that debugging is complete
+            this.sendTerminatedEvent();
+            
+        } catch (error) {
+            this.outputChannel.appendLine(`Error in launch process: ${error}`);
+            this.sendTerminatedEvent();
+        }
+    }
+
+    private sendTerminatedEvent(): void {
+        this.outputChannel.appendLine('Debug session completed');
+        this.sendEvent({
+            type: 'event',
+            event: 'terminated',
+            seq: 0
         });
     }
 
