@@ -20,6 +20,9 @@ import { compileSmallBasicProgram } from './compiler';
 let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
+	// Set extensions.ignoreRecommendations to true in user settings
+	setIgnoreRecommendations();
+
 	// The server is implemented in node
 	const serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')
@@ -129,20 +132,17 @@ export function activate(context: ExtensionContext) {
 		})
 	);
 
-	// Register the debug functionality - CLEAN VERSION WITHOUT DUPLICATES
-	// 1. Register configuration provider (for launch.json configurations)
-	context.subscriptions.push(
-		debug.registerDebugConfigurationProvider('smallbasic', new SmallBasicDebugConfigurationProvider())
-	);
+	// ========== DEBUG CONFIGURATION - CLEAN IMPLEMENTATION ==========
 
-	// 2. Register the debug adapter descriptor factory (only once!)
+	// 1. IMPORTANT: Register the debug adapter descriptor factory (ONCE ONLY)
 	context.subscriptions.push(
 		debug.registerDebugAdapterDescriptorFactory('smallbasic', new SmallBasicDebugAdapterDescriptorFactory())
 	);
 
-	// 3. Register configuration snippets provider
+	// 2. Register the debug configuration provider for F5 and launch configurations
 	context.subscriptions.push(
 		debug.registerDebugConfigurationProvider('smallbasic', {
+			// Provide default configurations for launch.json
 			provideDebugConfigurations(folder: vscode.WorkspaceFolder | undefined): vscode.ProviderResult<vscode.DebugConfiguration[]> {
 				return [
 					{
@@ -160,58 +160,96 @@ export function activate(context: ExtensionContext) {
 						compileOnly: true
 					}
 				];
-			}
-		})
-	);
+			},
+			
+				// Handle F5 with no configuration
+			resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, config: vscode.DebugConfiguration, token?: vscode.CancellationToken): vscode.ProviderResult<vscode.DebugConfiguration> {
+				// If no configuration is provided (pressed F5 with no launch.json)
+				if (!config.type || !config.request) {
+					const editor = vscode.window.activeTextEditor;
+					if (editor && editor.document.languageId === 'smallbasic') {
+						// Create a basic configuration
+						return {
+							type: 'smallbasic',
+							request: 'launch',
+							name: 'Debug Small Basic',
+							program: editor.document.uri.fsPath,
+							compileOnly: false
+							};
+						}
+					}
+					
+					// If this is a smallbasic config, ensure it has the required properties
+					if (config.type === 'smallbasic') {
+						// If program is missing or invalid, use the active editor
+						if (!config.program) {
+							const editor = vscode.window.activeTextEditor;
+							if (editor && editor.document.languageId === 'smallbasic') {
+								config.program = editor.document.uri.fsPath;
+							} else {
+								window.showErrorMessage('No Small Basic file active to debug');
+								return undefined; // Cancel debug session
+							}
+						}
+						
+						// Set defaults for other properties if missing
+						config.request = config.request || 'launch';
+						config.compileOnly = config.compileOnly || false;
+					}
+					
+					return config;
+				}
+			}, vscode.DebugConfigurationProviderTriggerKind.Dynamic)
+		);
 
-	// 4. Register F5 handler for Small Basic files
+	// 3. Register a catch-all debug configuration provider to handle F5 on Small Basic files
+	//    even when another debug type is active
+	context.subscriptions.push(
+		debug.registerDebugConfigurationProvider('*', {
+			resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, config: vscode.DebugConfiguration): vscode.ProviderResult<vscode.DebugConfiguration> {
+					// Check if this is an F5 press with no config and we're in a Small Basic file
+					if (!config.type && !config.request) {
+						const editor = vscode.window.activeTextEditor;
+						if (editor && editor.document.languageId === 'smallbasic') {
+							// Direct handling via our custom handler
+							handleSmallBasicDebug(editor.document.uri);
+							return undefined; // Cancel default VS Code debug session
+						}
+					}
+					// Let other debug types proceed normally
+					return config;
+				}
+			}, vscode.DebugConfigurationProviderTriggerKind.Dynamic)
+		);
+
+	// 4. Register F5 command handler
 	context.subscriptions.push(
 		commands.registerCommand('smallbasic.debug', (resource?: vscode.Uri) => {
 			handleSmallBasicDebug(resource);
 		})
 	);
 
-	// 5. Register automatic F5 handler for .sb files (catch all debug sessions)
-	context.subscriptions.push(
-		debug.registerDebugConfigurationProvider('*', {
-			resolveDebugConfiguration(folder: vscode.WorkspaceFolder | undefined, config: vscode.DebugConfiguration): vscode.ProviderResult<vscode.DebugConfiguration> {
-				const editor = vscode.window.activeTextEditor;
-				
-				// Check if this is an F5 press in a Small Basic file
-				if (editor && editor.document.languageId === 'smallbasic') {
-					if (!config.type || !config.request) {
-						// This is a direct F5 without specific configuration
-						// Directly handle Small Basic files instead of showing a popup
-						handleSmallBasicDebug(editor.document.uri);
-						// Return undefined to prevent VS Code from trying to start a debug session
-						return undefined;
-					}
-					
-					// If smallbasic is specified as the debug type, handle it
-					if (config.type === 'smallbasic') {
-						const uri = vscode.Uri.file(config.program as string);
-						handleSmallBasicDebug(uri);
-						return undefined;
-					}
-				}
-				
-				return config; // Return the config unchanged for other file types
-			}
-		}, vscode.DebugConfigurationProviderTriggerKind.Dynamic)
-	);
-
-	// 6. Custom debug event handler
-	context.subscriptions.push(
-		debug.onDidReceiveDebugSessionCustomEvent((event: vscode.DebugSessionCustomEvent) => {
-			if (event.event === 'smallbasic:run' && event.body?.uri) {
-				const uri = vscode.Uri.parse(event.body.uri);
-				handleSmallBasicDebug(uri);
-			}
-		})
-	);
-
 	// Start the client. This will also launch the server
 	client.start();
+}
+
+/**
+ * Sets the "extensions.ignoreRecommendations" setting to true in user settings
+ */
+async function setIgnoreRecommendations(): Promise<void> {
+	try {
+		const config = vscode.workspace.getConfiguration();
+		const currentValue = config.get('extensions.ignoreRecommendations');
+		
+		// Only set if it's not already true
+		if (currentValue !== true) {
+			await config.update('extensions.ignoreRecommendations', true, vscode.ConfigurationTarget.Global);
+			console.log('Set extensions.ignoreRecommendations to true');
+		}
+	} catch (err) {
+		// Log error but don't disturb the user
+		console.error('Error setting extensions.ignoreRecommendations:', err);
+	}
 }
 
 export function deactivate(): Thenable<void> | undefined {

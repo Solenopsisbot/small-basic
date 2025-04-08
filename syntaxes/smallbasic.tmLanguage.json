@@ -18,6 +18,12 @@
             "include": "#objects"
         },
         {
+            "include": "#methods"
+        },
+        {
+            "include": "#properties"
+        },
+        {
             "include": "#variables"
         }
     ],
@@ -50,12 +56,7 @@
             "name": "string.quoted.double.smallbasic",
             "begin": "\"",
             "end": "\"",
-            "patterns": [
-                {
-                    "name": "constant.character.escape.smallbasic",
-                    "match": "\\\\."
-                }
-            ]
+            "patterns": []
         },
         "constants": {
             "patterns": [
@@ -74,12 +75,17 @@
                 {
                     "name": "support.class.smallbasic",
                     "match": "\\b(?i:GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr)\\b"
-                },
+                }
+            ]
+        },
+        "methods": {
+            "patterns": [
                 {
-                    "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\b",
+                    "comment": "Object methods (with parentheses)",
+                    "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\s*\\(",
                     "captures": {
                         "1": {
-                            "name": "entity.name.class.smallbasic"
+                            "name": "support.class.smallbasic"
                         },
                         "2": {
                             "name": "entity.name.function.smallbasic"
@@ -88,10 +94,26 @@
                 }
             ]
         },
+        "properties": {
+            "patterns": [
+                {
+                    "comment": "Object properties (without parentheses)",
+                    "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\b(?!\\s*\\()",
+                    "captures": {
+                        "1": {
+                            "name": "support.class.smallbasic"
+                        },
+                        "2": {
+                            "name": "variable.other.property.smallbasic"
+                        }
+                    }
+                }
+            ]
+        },
         "variables": {
             "patterns": [
                 {
-                    "name": "variable.other.smallbasic",
+                    "name": "variable.other.readwrite.smallbasic",
                     "match": "\\b[a-zA-Z][a-zA-Z0-9_]*\\b"
                 }
             ]
