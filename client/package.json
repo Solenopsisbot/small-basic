@@ -1,10 +1,10 @@
 {
 	"name": "small-basic-client",
-	"description": "VSCode part of a language server",
+	"description": "Small Basic Support for VScode",
 	"author": "Solenopsisbot",
 	"license": "MIT",
 	"version": "0.1.1",
-	"publisher": "vscode",
+	"publisher": "Solenopsisbot",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Solenopsisbot/small-basic"
