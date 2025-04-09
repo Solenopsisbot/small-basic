@@ -15,13 +15,19 @@
             "include": "#constants"
         },
         {
-            "include": "#objects"
+            "include": "#method-calls"
         },
         {
-            "include": "#methods"
+            "include": "#sub-calls"
+        },
+        {
+            "include": "#sub-definitions"
         },
         {
             "include": "#properties"
+        },
+        {
+            "include": "#objects"
         },
         {
             "include": "#variables"
@@ -43,12 +49,35 @@
                     "match": "\\b(?i:If|Then|Else|ElseIf|EndIf|While|EndWhile|For|To|Step|EndFor|EndSub|Goto)\\b"
                 },
                 {
-                    "name": "keyword.control.declaration.smallbasic",
-                    "match": "\\b(?i:Sub)\\s+([A-Za-z][A-Za-z0-9_]*)\\b"
-                },
-                {
                     "name": "keyword.operator.smallbasic",
                     "match": "\\b(?i:And|Or|Not)\\b"
+                }
+            ]
+        },
+        "sub-definitions": {
+            "patterns": [
+                {
+                    "match": "\\b(?i:(Sub))\\s+([A-Za-z][A-Za-z0-9_]*)\\b",
+                    "captures": {
+                        "1": {
+                            "name": "keyword.control.declaration.smallbasic"
+                        },
+                        "2": {
+                            "name": "entity.name.function.smallbasic"
+                        }
+                    }
+                }
+            ]
+        },
+        "sub-calls": {
+            "patterns": [
+                {
+                    "match": "\\b([A-Za-z][A-Za-z0-9_]*)\\s*\\(\\)",
+                    "captures": {
+                        "1": {
+                            "name": "support.function.smallbasic"
+                        }
+                    }
                 }
             ]
         },
@@ -70,25 +99,16 @@
                 }
             ]
         },
-        "objects": {
+        "method-calls": {
             "patterns": [
                 {
-                    "name": "support.class.smallbasic",
-                    "match": "\\b(?i:GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr)\\b"
-                }
-            ]
-        },
-        "methods": {
-            "patterns": [
-                {
-                    "comment": "Object methods (with parentheses)",
                     "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\s*\\(",
                     "captures": {
                         "1": {
                             "name": "support.class.smallbasic"
                         },
                         "2": {
-                            "name": "entity.name.function.smallbasic"
+                            "name": "support.function.smallbasic"
                         }
                     }
                 }
@@ -97,24 +117,31 @@
         "properties": {
             "patterns": [
                 {
-                    "comment": "Object properties (without parentheses)",
                     "match": "\\b(?i:(GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr))\\.(\\w+)\\b(?!\\s*\\()",
                     "captures": {
                         "1": {
                             "name": "support.class.smallbasic"
                         },
                         "2": {
-                            "name": "variable.other.property.smallbasic"
+                            "name": "variable.parameter.smallbasic"
                         }
                     }
+                }
+            ]
+        },
+        "objects": {
+            "patterns": [
+                {
+                    "name": "support.class.smallbasic",
+                    "match": "\\b(?i:GraphicsWindow|TextWindow|Math|Array|Program|Clock|Shapes|File|Text|Mouse|Network|Sound|Turtle|Timer|Controls|Stack|Dictionary|ImageList|Desktop|Flickr)\\b(?!\\.)"
                 }
             ]
         },
         "variables": {
             "patterns": [
                 {
-                    "name": "variable.other.readwrite.smallbasic",
-                    "match": "\\b[a-zA-Z][a-zA-Z0-9_]*\\b"
+                    "name": "variable.other.smallbasic",
+                    "match": "\\b[a-zA-Z][a-zA-Z0-9_]*\\b(?!\\s*\\.)"
                 }
             ]
         }
