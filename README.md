@@ -1,67 +1,57 @@
 # Small Basic for Visual Studio Code
 
-This extension adds language support for Microsoft Small Basic to Visual Studio Code.
+Bring Microsoft Small Basic into Visual Studio Code! This extension makes programming in Small Basic a breeze with modern code editing features while maintaining the simple and educational nature of Small Basic.
+
 
 ## Features
 
-This Language Server provides the following features for Small Basic files:
-- Syntax highlighting for Small Basic (.sb) files
-- Code completion for Small Basic keywords, objects, and methods
-- Code snippets for common control structures (If/EndIf, For/EndFor, etc.)
-- Auto-insertion of parentheses for method calls
-- Variable and subroutine tracking for better IntelliSense support
-- Diagnostics for basic syntax errors (e.g., missing EndIf, EndWhile, etc.)
-- Folding regions for blocks (Sub/EndSub, If/EndIf, etc.)
-- Automatic indentation for control structures
+- **Run Small Basic directly in VS Code** - Press F5 to instantly run your code!
+- **Modern code editing** - Syntax highlighting, code completion, and snippets
+- **Code intelligence** - Auto-indentation, folding, and diagnostics
+- **Easy to use** - No complicated setup, just install and start coding
 
-## Code Snippets
 
-Type any of the following prefixes to activate snippets:
-- `if` - Creates an If/EndIf block
-- `ifelse` - Creates an If/Else/EndIf block
-- `for` - Creates a For/EndFor loop
-- `forstep` - Creates a For/EndFor loop with Step
-- `while` - Creates a While/EndWhile loop
-- `sub` - Creates a Sub/EndSub definition
-- `gwinit` - GraphicsWindow initialization with common properties
-- `twinit` - TextWindow initialization with common properties
+## Requirments
 
-## Customizing Small Basic Objects
+First, make sure you have Microsoft Small Basic installed:
+- Download from [Microsoft Small Basic website](https://smallbasic-publicwebsite.azurewebsites.net/)
+- Follow the installation instructions
 
-The extension loads object definitions from a JSON file located at:
-`data/smallbasic-objects.json`
+## Time-Saving Snippets
 
-You can modify this file to:
-- Add new objects or members
-- Update descriptions
-- Modify existing members
+Type these prefixes and press Tab to quickly insert code blocks:
 
-After editing the file, reload VSCode to apply your changes.
+| Snippet  | Description |
+|----------|-------------|
+| `if`     | Creates an If/EndIf block |
+| `ifelse` | Creates an If/Else/EndIf block |
+| `for`    | Creates a For/EndFor loop |
+| `while`  | Creates a While/EndWhile loop |
+| `sub`    | Creates a Sub/EndSub definition |
+| `gwinit` | GraphicsWindow initialization with common properties |
+| `twinit` | TextWindow initialization with common properties |
 
-## Small Basic Language
+## Commands
 
-Small Basic is a simplified programming language designed by Microsoft to make learning programming easy and fun. It features:
-- Simple syntax inspired by BASIC
-- Built-in objects for graphics, math, file handling, etc.
-- Limited set of keywords to reduce complexity
+- `F5` - Run your Small Basic program
+- `Run And Debug` - Run your Small Basic program
 
-## Running the Extension
+## Settings
 
-- Run `npm install` in this folder. This installs all necessary npm modules in both the client and server folder
-- Open VS Code on this folder.
-- Press Ctrl+Shift+B to start compiling the client and server in [watch mode](https://code.visualstudio.com/docs/editor/tasks#:~:text=The%20first%20entry%20executes,the%20HelloWorld.js%20file.).
-- Switch to the Run and Debug View in the Sidebar (Ctrl+Shift+D).
-- Select `Launch Client` from the drop down (if it is not already).
-- Press ▷ to run the launch config (F5).
-- In the [Extension Development Host](https://code.visualstudio.com/api/get-started/your-first-extension#:~:text=Then%2C%20inside%20the%20editor%2C%20press%20F5.%20This%20will%20compile%20and%20run%20the%20extension%20in%20a%20new%20Extension%20Development%20Host%20window.) instance of VSCode, open a Small Basic (.sb) file.
-  - Type Small Basic keywords and object names to see completion suggestions.
-  - Type variable names to get automatic completion.
-  - Type the start of a control structure like `if` to trigger snippets.
-  - Write code with syntax errors to see diagnostics.
+- `smallBasic.compilerPath`: Path to the Small Basic compiler executable (change if installed in a non-default location)
+- `smallBasic.enableAutoParentheses`: Controls whether to automatically add parentheses after method completion
+- `smallBasic.maxNumberOfProblems`: Controls the maximum number of problems reported
 
-## Extension Settings
+## Troubleshooting
 
-This extension contributes the following settings:
+**Program won't run?** Ensure Small Basic is installed and the compiler path is correctly set in the extension settings.
 
-* `smallBasic.maxNumberOfProblems`: Controls the maximum number of problems reported.
-* `smallBasic.enableAutoParentheses`: Controls whether to automatically add parentheses after method completion.
+**Seeing errors?** Check the Output panel for detailed error messages and diagnostics.
+
+## Acknowledgments
+
+This extension was developed with assistance from AI tools, including GitHub Copilot, to enhance code quality and development speed.
+
+## License
+
+This extension is licensed under the MIT License.

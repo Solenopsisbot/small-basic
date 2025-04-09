@@ -56,6 +56,23 @@ export async function handleSmallBasicDebug(uri: vscode.Uri | string, options: {
             
             outputChannel.appendLine(compileOutput || 'Compilation completed');
             
+            // Check for error messages in the compiler output before checking the executable
+            // Look specifically for the "X errors" pattern which indicates compilation failure
+            const errorMatch = compileOutput.match(/(\d+)\s+errors\./i);
+            if (errorMatch && parseInt(errorMatch[1]) > 0) {
+                outputChannel.appendLine(`❌ Compilation failed with ${errorMatch[1]} errors`);
+                
+                // Try to extract more detailed error information
+                const lines = compileOutput.split('\n');
+                for (const line of lines) {
+                    if (line.match(/line\s+\d+/i) || line.includes('Error:')) {
+                        outputChannel.appendLine(`  ${line.trim()}`);
+                    }
+                }
+                
+                return false;
+            }
+            
             // Check if the executable was created
             if (fs.existsSync(outputExe)) {
                 outputChannel.appendLine('✅ Compilation successful!');
@@ -80,7 +97,7 @@ export async function handleSmallBasicDebug(uri: vscode.Uri | string, options: {
                 return false;
             }
         } catch (error: any) {
-            // If compilation failed
+            // If compilation failed with an exception
             const errorMsg = error instanceof Error ? error.message : String(error);
             const stdErr = error instanceof Error && 'stderr' in error ? String(error.stderr) : '';
             
