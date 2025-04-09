@@ -22,7 +22,7 @@
 	"contributes": {
 		"languages": [{
 			"id": "smallbasic",
-			"aliases": ["Small Basic", "smallbasic"],
+			"aliases": ["Small Basic"],
 			"extensions": [".sb"],
 			"configuration": "./language-configuration.json"
 		}],
@@ -30,7 +30,7 @@
 			"language": "smallbasic",
 			"scopeName": "source.smallbasic",
 			"path": "./syntaxes/smallbasic.tmLanguage.json"
-			}],
+		}],
 		"snippets": [
 			{
 				"language": "smallbasic",
@@ -80,20 +80,38 @@
 			{
 				"command": "smallbasic.run",
 				"title": "Small Basic: Compile and Run Program"
+			},
+			{
+				"command": "smallbasic.runAndDebug",
+				"title": "Small Basic: Run and Debug"
+			},
+			{
+				"command": "extension.smallbasic.debug",
+				"title": "Small Basic: Debug (Direct)",
+				"enablement": "editorLangId == smallbasic"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "extension.smallbasic.debug",
+				"key": "f5",
+				"when": "editorLangId == smallbasic"
 			}
 		],
 		"debuggers": [
 			{
 				"type": "smallbasic",
-				"label": "Small Basic",
-				"runtime": "SmallBasic",
+				"label": "Small Basic Debugger",
+				"program": "./client/out/debug.js", 
+				"runtime": "node",
+				"languages": ["smallbasic"],
 				"configurationAttributes": {
 					"launch": {
-						"required": [],
+						"required": ["program"],
 						"properties": {
 							"program": {
 								"type": "string",
-								"description": "The path to the Small Basic program to debug",
+								"description": "Path to Small Basic program",
 								"default": "${file}"
 							},
 							"compileOnly": {
@@ -108,40 +126,8 @@
 					{
 						"type": "smallbasic",
 						"request": "launch",
-						"name": "Compile Small Basic Program",
-						"program": "${file}",
-						"compileOnly": true
-					},
-					{
-						"type": "smallbasic",
-						"request": "launch",
-						"name": "Run Small Basic Program",
-						"program": "${file}",
-						"compileOnly": false
-					}
-				],
-				"configurationSnippets": [
-					{
-						"label": "Small Basic: Compile",
-						"description": "Compile Small Basic program without running",
-						"body": {
-							"type": "smallbasic",
-							"request": "launch",
-							"name": "Compile Small Basic Program",
-							"program": "^\"\\${file}\"",
-							"compileOnly": true
-						}
-					},
-					{
-						"label": "Small Basic: Run",
-						"description": "Compile and run Small Basic program",
-						"body": {
-							"type": "smallbasic",
-							"request": "launch",
-							"name": "Run Small Basic Program",
-							"program": "^\"\\${file}\"",
-							"compileOnly": false
-						}
+						"name": "Launch Small Basic",
+						"program": "${file}"
 					}
 				]
 			}
