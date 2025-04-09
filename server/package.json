@@ -1,6 +1,6 @@
 {
 	"name": "small-basic-server",
-	"description": "Example implementation of a language server in node.",
+	"description": "Small Basic Support for VScode",
 	"version": "0.1.1",
 	"author": "Solenopsisbot",
 	"license": "MIT",
