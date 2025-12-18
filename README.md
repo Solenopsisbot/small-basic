@@ -11,7 +11,7 @@ Bring Microsoft Small Basic into Visual Studio Code! This extension makes progra
 - **Easy to use** - No complicated setup, just install and start coding
 
 
-## Requirments
+## Requirements
 
 First, make sure you have Microsoft Small Basic installed:
 - Download from [Microsoft Small Basic website](https://smallbasic-publicwebsite.azurewebsites.net/)
